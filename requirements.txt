@@ -1,0 +1,33 @@
+# Core dependencies
+fastapi==0.110.0
+uvicorn==0.27.1
+python-multipart==0.0.9
+pydantic==2.6.1
+
+# Document processing
+pymupdf==1.23.8  # For PDF extraction (faster and more accurate than PyPDF2)
+pdfplumber==0.10.3  # Alternative PDF extraction with better table support
+pytesseract==0.3.10  # For OCR if needed
+pillow==10.2.0  # For image processing
+pypdf2==3.0.1
+
+# Vector database and embeddings
+chromadb==0.4.22  # Lightweight vector database
+sentence-transformers==2.5.0  # For generating embeddings
+openai==1.12.0  # Optional for OpenAI embeddings
+
+# LLM and RAG framework
+langchain==0.1.4
+langchain-community==0.0.19
+langchain-openai==0.0.5
+ollama==0.1.6  # For local LLM integration
+
+# Utilities
+python-dotenv==1.0.1
+tqdm==4.66.2
+numpy==1.26.3
+pandas==2.2.0
+
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.9

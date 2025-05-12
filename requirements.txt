@@ -2,7 +2,7 @@
 fastapi==0.110.0
 uvicorn==0.27.1
 python-multipart==0.0.9
-pydantic==2.6.1
+pydantic==2.7.4
 
 # Document processing
 pymupdf==1.23.8  # For PDF extraction (faster and more accurate than PyPDF2)

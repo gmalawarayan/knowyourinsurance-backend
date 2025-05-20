@@ -44,6 +44,6 @@ uvicorn.run(
     host="127.0.0.1", 
     port=8000, 
     reload=False,
-    ssl_keyfile=ssl_keyfile,
-    ssl_certfile=ssl_certfile
+    # ssl_keyfile=ssl_keyfile,
+    # ssl_certfile=ssl_certfile
 )

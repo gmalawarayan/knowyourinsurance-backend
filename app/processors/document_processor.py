@@ -192,3 +192,28 @@ class DocumentProcessor:
             logger.info(f"Document determined not to be an insurance policy (Keywords: {found_keywords}, Length: {len(text)})")
         return is_policy
 
+def extract_text_from_pdf(self, file_path: str) -> Tuple[str, Dict[str, Any]]:
+    """
+    Extract text from a PDF file using PyPDF2.
+    """
+    try:
+        full_text = ""
+        metadata = {}
+        
+        with open(file_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file)
+            metadata = {
+                'title': reader.metadata.title if reader.metadata and reader.metadata.title else None,
+                'author': reader.metadata.author if reader.metadata and reader.metadata.author else None,
+                'page_count': len(reader.pages)
+            }
+            
+            for page_num in range(len(reader.pages)):
+                page = reader.pages[page_num]
+                full_text += page.extract_text() + "\n\n"
+        
+        return full_text, metadata
+    except Exception as e:
+        logger.error(f"Error extracting text with PyPDF2: {str(e)}")
+        raise
+

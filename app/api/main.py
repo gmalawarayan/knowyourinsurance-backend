@@ -141,10 +141,10 @@ async def root():
 async def upload_document(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    current_user: User = Depends(has_role(["admin", "analyst", "user"]))  # All roles can upload
+    # current_user: User = Depends(has_role(["admin", "analyst", "user"]))  # All roles can upload
 ):
     # Add user info to the log
-    logger.info(f"User {current_user.username} uploaded document: {file.filename}")
+    logger.info(f"User uploaded document: {file.filename}")
     """
     Upload and process an insurance policy document.
 

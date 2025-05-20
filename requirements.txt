@@ -5,11 +5,11 @@ python-multipart==0.0.9
 pydantic==2.7.4
 
 # Document processing
-pymupdf==1.23.8  # For PDF extraction (faster and more accurate than PyPDF2)
+# pymupdf==1.23.8  # For PDF extraction (faster and more accurate than PyPDF2)
 pdfplumber==0.10.3  # Alternative PDF extraction with better table support
 pytesseract==0.3.10  # For OCR if needed
 pillow==10.2.0  # For image processing
-pypdf2==3.0.1
+PyPDF2==3.0.1
 
 # Vector database and embeddings
 chromadb==0.4.22  # Lightweight vector database

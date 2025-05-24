@@ -51,19 +51,19 @@ class LLMQuerySystem:
         self.temperature = temperature
         
         # Initialize LLM based on model type
-        if model_type == "ollama":
-            logger.info(f"Initializing Ollama LLM with model: {model_name}")
-            self.llm = Ollama(model=model_name, temperature=temperature)
-        elif model_type == "openai":
-            if not api_key:
-                api_key = os.environ.get("OPENAI_API_KEY")
-                if not api_key:
-                    raise ValueError("OpenAI API key is required for OpenAI models")
+        # if model_type == "ollama":
+        logger.info(f"Initializing Ollama LLM with model: {model_name}")
+        self.llm = Ollama(model=model_name, temperature=temperature)
+        # elif model_type == "openai":
+        #     if not api_key:
+        #         api_key = os.environ.get("OPENAI_API_KEY")
+        #         if not api_key:
+        #             raise ValueError("OpenAI API key is required for OpenAI models")
             
-            logger.info(f"Initializing OpenAI LLM with model: {model_name}")
-            self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key)
-        else:
-            raise ValueError(f"Unsupported model type: {model_type}")
+        #     logger.info(f"Initializing OpenAI LLM with model: {model_name}")
+        #     self.llm = ChatOpenAI(model=model_name, temperature=temperature, api_key=api_key)
+        # else:
+        #     raise ValueError(f"Unsupported model type: {model_type}")
         
         # Initialize prompt templates
         self._initialize_prompts()
@@ -217,20 +217,24 @@ class LLMQuerySystem:
         Returns:
             Dictionary with coverage gap analysis
         """
-        logger.info(f"Analyzing coverage gaps for document: {document_id}")
+        logger.info(f"Analyzing coverage gaps for document: LLMQuery File {document_id}")
         
         # Retrieve policy chunks
         chunks = self.vector_store.get_document_chunks(document_id)
-        
+    
+        logger.info(f"After getting Chunks {document_id}")
+
         if not chunks:
             return {
                 "analysis": "No policy document found with the provided ID.",
                 "gaps": []
             }
         
+        logger.info(f"After checking if Chunks are there {document_id}")
         # Format context from chunks
         context = self._format_context(chunks)
         
+        logger.info(f"After format context {document_id}")
         # Create coverage gap analysis prompt
         coverage_gap_prompt = PromptTemplate.from_template(
             """You are an AI assistant specialized in analyzing insurance policies.
@@ -260,7 +264,9 @@ class LLMQuerySystem:
             
             Coverage Gap Analysis:"""
         )
-        
+        logger.info(f"Analyzing coverage gaps for document: LLMQuery File {coverage_gap_prompt}")
+        logger.info(f"Analyzing coverage gaps for document: LLMQuery File {self.llm}")
+
         # Create and run chain
         chain = (
             {"context": lambda _: context}

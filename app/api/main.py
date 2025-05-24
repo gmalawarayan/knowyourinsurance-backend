@@ -18,6 +18,8 @@ import shutil
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
+from app.core.CoverageGapAnalyzer import CoverageGapAnalyzer
+from app.core.RiskAssessmentAnalyzer import RiskAssessmentAnalyzer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -261,8 +263,12 @@ async def query_document(document_id: str, query_request: QueryRequest):
         logger.error(f"Error querying document: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error querying document: {str(e)}")
 
+# Initialize the analyzers
+coverage_gap_analyzer = CoverageGapAnalyzer(llm_query_system)
+
 @app.get("/documents/{document_id}/coverage-gaps", response_model=AnalysisResponse)
 async def analyze_coverage_gaps(document_id: str):
+
     """
     Analyze coverage gaps in an insurance policy.
 
@@ -271,31 +277,31 @@ async def analyze_coverage_gaps(document_id: str):
 
     Returns:
         Coverage gap analysis
+
+    Get coverage gaps for a document.
+
     """
     logger.info(f"Analyzing coverage gaps for document {document_id}")
 
-    # Check if document exists and is processed
-    if document_id not in documents or "processed_data" not in documents[document_id]:
-        raise HTTPException(status_code=404, detail=f"Document {document_id} not found or not processed yet")
-
-    # Check if document is an insurance policy
-    if not documents[document_id]["is_insurance_policy"]:
-        return {
-            "analysis": {
-                "summary": "This document does not appear to be an insurance policy.",
-                "gaps": []
-            }
-        }
-
-    # Analyze coverage gaps
     try:
-        result = insurance_analyzer.analyze_coverage_gaps(document_id)
-
-        return {"analysis": result}
-
+        # Retrieve the document from the vector store
+        document = vector_store.get_document(document_id)
+        if not document:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        # Get the document text and metadata
+        document_text = " ".join([chunk["text"] for chunk in document["chunks"]])
+        metadata = document["metadata"]
+        
+        # Analyze coverage gaps
+        gaps = coverage_gap_analyzer.analyze_coverage_gaps(document_id, document_text, metadata)
+        
+        return gaps
     except Exception as e:
-        logger.error(f"Error analyzing coverage gaps: {str(e)}")
+        logger.error(f"Error getting coverage gaps: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error analyzing coverage gaps: {str(e)}")
+
+risk_assessment_analyzer = RiskAssessmentAnalyzer(llm_query_system)
 
 @app.get("/documents/{document_id}/risk-assessment", response_model=AnalysisResponse)
 async def assess_risk(document_id: str):

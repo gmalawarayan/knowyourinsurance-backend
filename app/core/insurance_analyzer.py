@@ -14,6 +14,7 @@ import json
 
 from app.core.llm_query import LLMQuerySystem
 from app.core.vector_store import VectorStore
+from langchain_community.llms import Ollama
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -34,6 +35,9 @@ class InsuranceAnalyzer:
         """
         self.llm_query = llm_query_system
         self.vector_store = vector_store
+
+        self.llm = Ollama(model="llama3")
+
         logger.info("Initialized InsuranceAnalyzer")
     
     def analyze_coverage_gaps(self, document_id: str) -> Dict[str, Any]:
